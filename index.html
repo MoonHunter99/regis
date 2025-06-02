@@ -20,106 +20,141 @@
                     <label for="login-password">Password:</label>
                     <input type="password" id="login-password" name="password" required>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit" class="btn-primary">Login</button>
                 <p>Don't have an account? <a href="#" id="showRegister">Register here</a></p>
             </form>
         </div>
 
-        <!-- Registration Form -->
+        <!-- Multi-Step Registration Form -->
         <div id="registerForm" class="form-container hidden">
             <h2>User Registration</h2>
+            
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" id="step1">1</div>
+                <div class="step" id="step2">2</div>
+                <div class="step" id="step3">3</div>
+            </div>
+
             <form id="registration-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">First Name:</label>
-                        <input type="text" id="firstName" name="firstName" required>
+                <!-- Step 1: Basic Information -->
+                <div id="basicInfo" class="registration-step">
+                    <h3>Basic Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name:</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="middleName">Middle Name:</label>
+                            <input type="text" id="middleName" name="middleName">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="middleName">Middle Name:</label>
-                        <input type="text" id="middleName" name="middleName">
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="lastName">Last Name:</label>
-                        <input type="text" id="lastName" name="lastName" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="suffix">Suffix:</label>
+                            <select id="suffix" name="suffix">
+                                <option value="">Select Suffix</option>
+                                <option value="Jr.">Jr.</option>
+                                <option value="Sr.">Sr.</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="suffix">Suffix:</label>
-                        <select id="suffix" name="suffix">
-                            <option value="">Select Suffix</option>
-                            <option value="Jr.">Jr.</option>
-                            <option value="Sr.">Sr.</option>
-                            <option value="II">II</option>
-                            <option value="III">III</option>
-                            <option value="IV">IV</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="phoneNumber">Phone Number:</label>
-                    <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="+63 XXX XXX XXXX" required>
-                </div>
-
-                <h3>Address Information</h3>
-                <div class="form-row">
                     <div class="form-group">
-                        <label for="region">Region:</label>
-                        <select id="region" name="region" required>
-                            <option value="">Select Region</option>
-                        </select>
+                        <label for="phoneNumber">Phone Number:</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="+63 XXX XXX XXXX" required>
                     </div>
-                    <div class="form-group">
-                        <label for="province">Province:</label>
-                        <select id="province" name="province" required disabled>
-                            <option value="">Select Province</option>
-                        </select>
+
+                    <div class="navigation-buttons">
+                        <div></div>
+                        <button type="button" id="nextStep1">Next</button>
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="municipality">Municipality:</label>
-                        <select id="municipality" name="municipality" required disabled>
-                            <option value="">Select Municipality</option>
-                        </select>
+                <!-- Step 2: Address Information -->
+                <div id="addressInfo" class="registration-step hidden">
+                    <h3>Address Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="region">Region:</label>
+                            <select id="region" name="region" required>
+                                <option value="">Select Region</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="province">Province:</label>
+                            <select id="province" name="province" required disabled>
+                                <option value="">Select Province</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="barangay">Barangay:</label>
-                        <select id="barangay" name="barangay" required disabled>
-                            <option value="">Select Barangay</option>
-                        </select>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="municipality">Municipality:</label>
+                            <select id="municipality" name="municipality" required disabled>
+                                <option value="">Select Municipality</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="barangay">Barangay:</label>
+                            <select id="barangay" name="barangay" required disabled>
+                                <option value="">Select Barangay</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" id="prevStep2" class="btn-secondary">Previous</button>
+                        <button type="button" id="nextStep2">Next</button>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
+                <!-- Step 3: Account Details -->
+                <div id="accountDetails" class="registration-step hidden">
+                    <h3>Account Details</h3>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password:</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
-                </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
 
-                <button type="submit">Register</button>
-                <p>Already have an account? <a href="#" id="showLogin">Login here</a></p>
+                    <div class="navigation-buttons">
+                        <button type="button" id="prevStep3" class="btn-secondary">Previous</button>
+                        <button type="submit" id="registerBtn">Register</button>
+                    </div>
+                </div>
             </form>
+
+            <p style="text-align: center; margin-top: 20px;">
+                Already have an account? <a href="#" id="showLogin">Login here</a>
+            </p>
         </div>
 
-        <!-- Dashboard (shown after successful login) -->
+        <!-- Dashboard -->
         <div id="dashboard" class="form-container hidden">
             <h2>Welcome to Dashboard</h2>
             <div id="userInfo"></div>
@@ -128,7 +163,7 @@
     </div>
 
     <div id="message" class="message"></div>
-
+    
     <script src="js/script.js"></script>
 </body>
 </html>
