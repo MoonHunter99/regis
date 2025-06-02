@@ -1,4 +1,4 @@
-// Address data structure
+// Address data structureAdd commentMore actions
 const addressData = {
     "Metro Manila": {
         "Manila": {
@@ -160,10 +160,6 @@ const addressData = {
     }
 };
 
-// In-memory user storage (simulating a database)
-let registeredUsers = {};
-let currentUser = null;
-
 // DOM Elements
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -173,29 +169,11 @@ const showLoginLink = document.getElementById('showLogin');
 const logoutBtn = document.getElementById('logoutBtn');
 const messageDiv = document.getElementById('message');
 
-// Registration steps
-const basicInfoStep = document.getElementById('basicInfo');
-const addressInfoStep = document.getElementById('addressInfo');
-const accountDetailsStep = document.getElementById('accountDetails');
-
-// Step navigation buttons
-const nextStep1Btn = document.getElementById('nextStep1');
-const nextStep2Btn = document.getElementById('nextStep2');
-const prevStep2Btn = document.getElementById('prevStep2');
-const prevStep3Btn = document.getElementById('prevStep3');
-
-// Step indicators
-const step1Indicator = document.getElementById('step1');
-const step2Indicator = document.getElementById('step2');
-const step3Indicator = document.getElementById('step3');
-
 // Form elements
 const regionSelect = document.getElementById('region');
 const provinceSelect = document.getElementById('province');
 const municipalitySelect = document.getElementById('municipality');
 const barangaySelect = document.getElementById('barangay');
-
-let currentStep = 1;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -204,13 +182,23 @@ document.addEventListener('DOMContentLoaded', function() {
     checkLoginStatus();
 });
 
+// Populate regions dropdown
+function populateRegions() {
+    regionSelect.innerHTML = '<option value="">Select Region</option>';
+    for (const region in addressData) {
+        const option = document.createElement('option');
+        option.value = region;
+        option.textContent = region;
+        regionSelect.appendChild(option);
+    }
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // Form switching
     showRegisterLink.addEventListener('click', (e) => {
         e.preventDefault();
         showForm('register');
-        resetRegistrationForm();
     });
 
     showLoginLink.addEventListener('click', (e) => {
@@ -218,52 +206,17 @@ function setupEventListeners() {
         showForm('login');
     });
 
-    // Step navigation
-    if (nextStep1Btn) {
-        nextStep1Btn.addEventListener('click', () => {
-            if (validateStep1()) {
-                goToStep(2);
-            }
-        });
-    }
-
-    if (nextStep2Btn) {
-        nextStep2Btn.addEventListener('click', () => {
-            if (validateStep2()) {
-                goToStep(3);
-            }
-        });
-    }
-
-    if (prevStep2Btn) {
-        prevStep2Btn.addEventListener('click', () => goToStep(1));
-    }
-
-    if (prevStep3Btn) {
-        prevStep3Btn.addEventListener('click', () => goToStep(2));
-    }
-
     // Address cascading dropdowns
     regionSelect.addEventListener('change', handleRegionChange);
     provinceSelect.addEventListener('change', handleProvinceChange);
     municipalitySelect.addEventListener('change', handleMunicipalityChange);
 
     // Form submissions
-    const registrationForm = document.getElementById('registration-form');
-    const loginFormElement = document.getElementById('login-form');
-    
-    if (registrationForm) {
-        registrationForm.addEventListener('submit', handleRegistration);
-    }
-    
-    if (loginFormElement) {
-        loginFormElement.addEventListener('submit', handleLogin);
-    }
+    document.getElementById('registration-form').addEventListener('submit', handleRegistration);
+    document.getElementById('login-form').addEventListener('submit', handleLogin);
     
     // Logout
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
+    logoutBtn.addEventListener('click', handleLogout);
 }
 
 // Show specific form
@@ -281,101 +234,11 @@ function showForm(formType) {
     }
 }
 
-// Reset registration form to step 1
-function resetRegistrationForm() {
-    if (basicInfoStep && addressInfoStep && accountDetailsStep) {
-        currentStep = 1;
-        updateStepDisplay();
-        const registrationForm = document.getElementById('registration-form');
-        if (registrationForm) {
-            registrationForm.reset();
-        }
-        handleRegionChange(); // Reset address dropdowns
-    }
-}
-
-// Go to specific step
-function goToStep(step) {
-    currentStep = step;
-    updateStepDisplay();
-}
-
-// Update step display
-function updateStepDisplay() {
-    if (!basicInfoStep || !addressInfoStep || !accountDetailsStep) return;
-    
-    // Hide all steps
-    basicInfoStep.classList.add('hidden');
-    addressInfoStep.classList.add('hidden');
-    accountDetailsStep.classList.add('hidden');
-
-    // Reset step indicators
-    if (step1Indicator) step1Indicator.classList.remove('active', 'completed');
-    if (step2Indicator) step2Indicator.classList.remove('active', 'completed');
-    if (step3Indicator) step3Indicator.classList.remove('active', 'completed');
-
-    // Show current step and update indicators
-    if (currentStep === 1) {
-        basicInfoStep.classList.remove('hidden');
-        if (step1Indicator) step1Indicator.classList.add('active');
-    } else if (currentStep === 2) {
-        addressInfoStep.classList.remove('hidden');
-        if (step1Indicator) step1Indicator.classList.add('completed');
-        if (step2Indicator) step2Indicator.classList.add('active');
-    } else if (currentStep === 3) {
-        accountDetailsStep.classList.remove('hidden');
-        if (step1Indicator) step1Indicator.classList.add('completed');
-        if (step2Indicator) step2Indicator.classList.add('completed');
-        if (step3Indicator) step3Indicator.classList.add('active');
-    }
-}
-
-// Validate Step 1
-function validateStep1() {
-    const firstName = document.getElementById('firstName')?.value.trim();
-    const lastName = document.getElementById('lastName')?.value.trim();
-    const phoneNumber = document.getElementById('phoneNumber')?.value.trim();
-
-    if (!firstName || !lastName || !phoneNumber) {
-        showMessage('Please fill in all required basic information fields!', 'error');
-        return false;
-    }
-    return true;
-}
-
-// Validate Step 2
-function validateStep2() {
-    const region = regionSelect?.value;
-    const province = provinceSelect?.value;
-    const municipality = municipalitySelect?.value;
-    const barangay = barangaySelect?.value;
-
-    if (!region || !province || !municipality || !barangay) {
-        showMessage('Please fill in all address information fields!', 'error');
-        return false;
-    }
-    return true;
-}
-
-// Populate regions dropdown
-function populateRegions() {
-    if (!regionSelect || typeof addressData === 'undefined') return;
-    
-    regionSelect.innerHTML = '<option value="">Select Region</option>';
-    for (const region in addressData) {
-        const option = document.createElement('option');
-        option.value = region;
-        option.textContent = region;
-        regionSelect.appendChild(option);
-    }
-}
-
 // Handle region change
 function handleRegionChange() {
-    if (!regionSelect || typeof addressData === 'undefined') return;
-    
     const selectedRegion = regionSelect.value;
     
+    // Reset dependent dropdowns
     provinceSelect.innerHTML = '<option value="">Select Province</option>';
     municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
     barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
@@ -396,11 +259,10 @@ function handleRegionChange() {
 
 // Handle province change
 function handleProvinceChange() {
-    if (!regionSelect || !provinceSelect || typeof addressData === 'undefined') return;
-    
     const selectedRegion = regionSelect.value;
     const selectedProvince = provinceSelect.value;
     
+    // Reset dependent dropdowns
     municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
     barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
     
@@ -419,12 +281,11 @@ function handleProvinceChange() {
 
 // Handle municipality change
 function handleMunicipalityChange() {
-    if (!regionSelect || !provinceSelect || !municipalitySelect || typeof addressData === 'undefined') return;
-    
     const selectedRegion = regionSelect.value;
     const selectedProvince = provinceSelect.value;
     const selectedMunicipality = municipalitySelect.value;
     
+    // Reset barangay dropdown
     barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
     barangaySelect.disabled = !selectedMunicipality;
     
@@ -448,50 +309,55 @@ function handleRegistration(e) {
     const password = formData.get('password');
     const confirmPassword = formData.get('confirmPassword');
     
+    // Validate password match
     if (password !== confirmPassword) {
         showMessage('Passwords do not match!', 'error');
         return;
     }
     
+    // Convert FormData to JSON
     const data = {};
     for (let [key, value] of formData.entries()) {
         data[key] = value;
     }
+    
+    // Remove confirm password from data
     delete data.confirmPassword;
     
-    // Check if username or email already exists
-    const username = data.username;
-    const email = data.email;
-    
-    for (let existingUser in registeredUsers) {
-        if (registeredUsers[existingUser].username === username) {
-            showMessage('Username already exists!', 'error');
-            return;
-        }
-        if (registeredUsers[existingUser].email === email) {
-            showMessage('Email already registered!', 'error');
-            return;
-        }
-    }
-    
-    const submitBtn = document.getElementById('registerBtn') || e.target.querySelector('button[type="submit"]');
+    // Add loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Registering...';
     submitBtn.disabled = true;
     
-    // Add timestamp and store user
-    data.created_at = new Date().toISOString();
-    const userId = Date.now().toString(); // Simple ID generation
-    registeredUsers[userId] = data;
-    
-    // Simulate API call
-    setTimeout(() => {
-        showMessage('Registration successful! Please login.', 'success');
-        showForm('login');
-        resetRegistrationForm();
+    // Send AJAX request
+    fetch('register.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showMessage('Registration successful! Please login.', 'success');
+            showForm('login');
+            e.target.reset();
+            // Reset address dropdowns
+            handleRegionChange();
+        } else {
+            showMessage(result.message || 'Registration failed!', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('An error occurred during registration!', 'error');
+    })
+    .finally(() => {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-    }, 1500);
+    });
 }
 
 // Handle login form submission
@@ -499,73 +365,87 @@ function handleLogin(e) {
     e.preventDefault();
     
     const formData = new FormData(e.target);
-    const loginUsername = formData.get('username');
-    const loginPassword = formData.get('password');
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
     
+    // Add loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Logging in...';
     submitBtn.disabled = true;
     
-    // Find user by username or email
-    let foundUser = null;
-    for (let userId in registeredUsers) {
-        const user = registeredUsers[userId];
-        if ((user.username === loginUsername || user.email === loginUsername) && 
-            user.password === loginPassword) {
-            foundUser = user;
-            break;
-        }
-    }
-    
-    // Simulate login delay
-    setTimeout(() => {
-        if (foundUser) {
-            currentUser = foundUser;
+    // Send AJAX request
+    fetch('login.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
             showMessage('Login successful!', 'success');
-            displayUserInfo(foundUser);
+            displayUserInfo(result.user);
             showForm('dashboard');
             e.target.reset();
         } else {
-            showMessage('Invalid username/email or password!', 'error');
+            showMessage(result.message || 'Login failed!', 'error');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('An error occurred during login!', 'error');
+    })
+    .finally(() => {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-    }, 1000);
+    });
 }
 
 // Handle logout
 function handleLogout() {
-    currentUser = null;
-    showMessage('Logged out successfully!', 'success');
-    showForm('login');
-}
-
-// Check login status
-function checkLoginStatus() {
-    if (currentUser) {
-        displayUserInfo(currentUser);
-        showForm('dashboard');
-    } else {
+    fetch('logout.php', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(result => {
+        showMessage('Logged out successfully!', 'success');
         showForm('login');
-    }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Logout successful!', 'success');
+        showForm('login');
+    });
 }
 
-// Display user information
+// Check login status on page load
+function checkLoginStatus() {
+    fetch('check_session.php')
+    .then(response => response.json())
+    .then(result => {
+        if (result.logged_in) {
+            displayUserInfo(result.user);
+            showForm('dashboard');
+        } else {
+            showForm('login');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showForm('login');
+    });
+}
+
+// Display user information in dashboard
 function displayUserInfo(user) {
     const userInfoDiv = document.getElementById('userInfo');
-    if (!userInfoDiv) return;
-    
-    const fullName = [
-        user.firstName,
-        user.middleName,
-        user.lastName,
-        user.suffix
-    ].filter(name => name && name.trim()).join(' ');
-    
     userInfoDiv.innerHTML = `
         <h3>User Information</h3>
-        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Name:</strong> ${user.firstName} ${user.middleName || ''} ${user.lastName} ${user.suffix || ''}</p>
         <p><strong>Username:</strong> ${user.username}</p>
         <p><strong>Email:</strong> ${user.email}</p>
         <p><strong>Phone:</strong> ${user.phoneNumber}</p>
@@ -576,8 +456,6 @@ function displayUserInfo(user) {
 
 // Show message function
 function showMessage(message, type) {
-    if (!messageDiv) return;
-    
     messageDiv.textContent = message;
     messageDiv.className = `message ${type}`;
     messageDiv.classList.add('show');
@@ -586,26 +464,3 @@ function showMessage(message, type) {
         messageDiv.classList.remove('show');
     }, 5000);
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    const body = document.body;
-    
-    // Detect mobile or desktop
-    const isMobile = window.innerWidth <= 767;
-    const imageUrl = isMobile ? './mobile-bg-img.jpg' : './bg-img.jpg';
-    
-    // Preload background image
-    const backgroundImage = new Image();
-    
-    backgroundImage.onload = function() {
-        // Image loaded - add it to background
-        body.classList.add('bg-loaded');
-    };
-    
-    backgroundImage.onerror = function() {
-        console.log('Background image failed to load');
-    };
-    
-    // Start loading
-    backgroundImage.src = imageUrl;
-});
